@@ -94,9 +94,9 @@ namespace Orchard.ContentManagement.Handlers {
         //    Filters.Add(new InlineStorageFilter<TPart> { OnIndexed = handler });
         //}
 
-        //protected void OnGetContentItemMetadata<TPart>(Action<GetContentItemMetadataContext, TPart> handler) where TPart : class, IContent {
-        //    Filters.Add(new InlineTemplateFilter<TPart> { OnGetItemMetadata = handler });
-        //}
+        protected void OnGetContentItemMetadata<TPart>(Action<GetContentItemMetadataContext, TPart> handler) where TPart : class, IContent {
+            Filters.Add(new InlineTemplateFilter<TPart> { OnGetItemMetadata = handler });
+        }
         //protected void OnGetDisplayShape<TPart>(Action<BuildDisplayContext, TPart> handler) where TPart : class, IContent {
         //    Filters.Add(new InlineTemplateFilter<TPart> { OnGetDisplayShape = handler });
         //}
@@ -208,6 +208,13 @@ namespace Orchard.ContentManagement.Handlers {
             //    if (OnDestroyed != null)
             //        OnDestroyed(context, instance);
             //}
+        }
+
+        class InlineTemplateFilter<TPart> : TemplateFilterBase<TPart> where TPart : class, IContent {
+            public Action<GetContentItemMetadataContext, TPart> OnGetItemMetadata { get; set; }
+            protected override void GetContentItemMetadata(GetContentItemMetadataContext context, TPart instance) {
+                if (OnGetItemMetadata != null) OnGetItemMetadata(context, instance);
+            }
         }
 
         void IContentHandler.Activating(ActivatingContentContext context) {
@@ -370,11 +377,11 @@ namespace Orchard.ContentManagement.Handlers {
         //    Destroyed(context);
         //}
 
-        //void IContentHandler.GetContentItemMetadata(GetContentItemMetadataContext context) {
-        //    foreach (var filter in Filters.OfType<IContentTemplateFilter>())
-        //        filter.GetContentItemMetadata(context);
-        //    GetItemMetadata(context);
-        //}
+        void IContentHandler.GetContentItemMetadata(GetContentItemMetadataContext context) {
+            foreach (var filter in Filters.OfType<IContentTemplateFilter>())
+                filter.GetContentItemMetadata(context);
+            GetItemMetadata(context);
+        }
         //void IContentHandler.BuildDisplay(BuildDisplayContext context) {
         //    foreach (var filter in Filters.OfType<IContentTemplateFilter>())
         //        filter.BuildDisplayShape(context);
@@ -417,6 +424,8 @@ namespace Orchard.ContentManagement.Handlers {
 
         protected virtual void Removing(RemoveContentContext context) { }
         protected virtual void Removed(RemoveContentContext context) { }
+
+        protected virtual void GetItemMetadata(GetContentItemMetadataContext context) { }
 
         //protected virtual void Indexing(IndexContentContext context) { }
         //protected virtual void Indexed(IndexContentContext context) { }

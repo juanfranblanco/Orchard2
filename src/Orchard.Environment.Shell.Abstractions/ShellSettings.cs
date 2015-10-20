@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Orchard.Environment.Shell.Configuration;
 using Orchard.Environment.Shell.Models;
 using System;
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Orchard.Environment.Commands;
 using Orchard.Environment.Shell;
+using Orchard.Environment.Shell.Configuration;
 using System;
 using System.Linq;
 

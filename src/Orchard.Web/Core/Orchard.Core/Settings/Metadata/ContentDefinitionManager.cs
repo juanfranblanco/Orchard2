@@ -14,15 +14,13 @@ namespace Orchard.Core.Settings.Metadata {
     public class ContentDefinitionManager : Component, IContentDefinitionManager {
         private readonly IContentStorageManager _contentStorageManager;
         private readonly ISettingsFormatter _settingsFormatter;
-        private readonly ILogger _logger;
 
         public ContentDefinitionManager(
             IContentStorageManager contentStorageManager,
             ISettingsFormatter settingsFormatter,
-            ILoggerFactory loggerFactory) {
+            ILoggerFactory loggerFactory) : base(loggerFactory) {
             _contentStorageManager = contentStorageManager;
             _settingsFormatter = settingsFormatter;
-            _logger = loggerFactory.CreateLogger<ContentDefinitionManager>();
         }
 
         public IEnumerable<ContentTypeDefinition> ListTypeDefinitions() {
@@ -258,7 +256,7 @@ namespace Orchard.Core.Settings.Metadata {
                 return XElement.Parse(settings);
             }
             catch (Exception ex) {
-                _logger.LogError("Unable to parse settings xml", ex);
+                Logger.LogError("Unable to parse settings xml", ex);
                 return null;
             }
         }

@@ -3,7 +3,6 @@ using System;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
-using Orchard.Hosting.ShellBuilders;
 using Orchard.Environment.Shell.Descriptor.Models;
 
 namespace Orchard.Environment.Shell.Builders {
@@ -26,15 +25,17 @@ namespace Orchard.Environment.Shell.Builders {
             var sw = Stopwatch.StartNew();
             _logger.LogInformation("Creating shell context for tenant {0}", settings.Name);
 
-            var blueprint = _compositionStrategy.Compose(settings, MinimumShellDescriptor());
-            var provider = _shellContainerFactory.CreateContainer(settings, blueprint);
+            var currentDescriptor = MinimumShellDescriptor();
+            var blueprint = _compositionStrategy.Compose(settings, currentDescriptor);
+            var shellScope = _shellContainerFactory.CreateContainer(settings, blueprint);
 
             try {
                 var shellcontext = new ShellContext {
                     Settings = settings,
+                    Descriptor = currentDescriptor,
                     Blueprint = blueprint,
-                    LifetimeScope = provider,
-                    Shell = provider.GetRequiredService<IOrchardShell>()
+                    LifetimeScope = shellScope,
+                    Shell = shellScope.GetRequiredService<IOrchardShell>()
                 };
 
                 _logger.LogVerbose("Created shell context for tenant {0} in {1}ms", settings.Name, sw.ElapsedMilliseconds);
@@ -75,13 +76,29 @@ namespace Orchard.Environment.Shell.Builders {
             };
 
             var blueprint = _compositionStrategy.Compose(settings, descriptor);
-            var provider = _shellContainerFactory.CreateContainer(settings, blueprint);
+            var shellScope = _shellContainerFactory.CreateContainer(settings, blueprint);
 
             return new ShellContext {
                 Settings = settings,
+                Descriptor = descriptor,
                 Blueprint = blueprint,
-                LifetimeScope = provider,
-                Shell = provider.GetService<IOrchardShell>()
+                LifetimeScope = shellScope,
+                Shell = shellScope.GetService<IOrchardShell>()
+            };
+        }
+
+        public ShellContext CreateDescribedContext(ShellSettings settings, ShellDescriptor shellDescriptor) {
+            _logger.LogDebug("Creating described context for tenant {0}", settings.Name);
+
+            var blueprint = _compositionStrategy.Compose(settings, shellDescriptor);
+            var shellScope = _shellContainerFactory.CreateContainer(settings, blueprint);
+
+            return new ShellContext {
+                Settings = settings,
+                Descriptor = shellDescriptor,
+                Blueprint = blueprint,
+                LifetimeScope = shellScope,
+                Shell = shellScope.GetService<IOrchardShell>()
             };
         }
     }

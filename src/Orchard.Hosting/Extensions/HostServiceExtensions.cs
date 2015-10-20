@@ -7,11 +7,28 @@ using Orchard.Environment.Shell;
 using Orchard.Environment.Shell.Builders;
 using Orchard.Services;
 using Orchard.Hosting.Services;
+using Orchard.Environment.Shell.Configuration;
 
 namespace Orchard.Hosting {
     public static class HostServiceExtensions {
         public static IServiceCollection AddHost(
             this IServiceCollection services, Action<IServiceCollection> additionalDependencies) {
+            services.AddSingleton<IClock, Clock>();
+            services.AddSingleton<IOrchardLibraryManager, OrchardLibraryManager>();
+
+            services.AddSingleton<IOrchardHost, DefaultOrchardHost>();
+            {
+                services.AddSingleton<IShellSettingsManager, ShellSettingsManager>();
+
+                services.AddSingleton<IShellContextFactory, ShellContextFactory>();
+                {
+                    services.AddSingleton<ICompositionStrategy, CompositionStrategy>();
+
+                    services.AddSingleton<IShellContainerFactory, ShellContainerFactory>();
+                }
+            }
+            services.AddSingleton<IRunningShellTable, RunningShellTable>();
+
 
             services.AddFileSystems();
 
@@ -24,28 +41,6 @@ namespace Orchard.Hosting {
             services.AddTransient<IOrchardShellHost, DefaultOrchardShellHost>();
 
             return services.AddFallback();
-        }
-
-        public static IServiceCollection AddHostCore(this IServiceCollection services) {
-            services.AddSingleton<IClock, Clock>();
-
-            services.AddSingleton<IOrchardHost, DefaultOrchardHost>();
-            {
-                services.AddSingleton<IShellSettingsManager, ShellSettingsManager>();
-
-                services.AddSingleton<IShellContextFactory, ShellContextFactory>();
-                {
-                    services.AddSingleton<ICompositionStrategy, CompositionStrategy>();
-                    {
-                        services.AddSingleton<IOrchardLibraryManager, OrchardLibraryManager>();
-                    }
-
-                    services.AddSingleton<IShellContainerFactory, ShellContainerFactory>();
-                }
-            }
-            services.AddSingleton<IRunningShellTable, RunningShellTable>();
-
-            return services;
         }
     }
 }

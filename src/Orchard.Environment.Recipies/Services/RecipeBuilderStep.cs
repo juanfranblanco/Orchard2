@@ -1,10 +1,13 @@
 ﻿using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 using Orchard.ContentManagement;
 using Orchard.DependencyInjection;
 using Orchard.Environment.Recipes.Models;
 
 namespace Orchard.Environment.Recipes.Services {
     public abstract class RecipeBuilderStep : Component, IRecipeBuilderStep {
+        public RecipeBuilderStep(ILoggerFactory loggerFactory) : base(loggerFactory) { }
+
         public abstract string Name { get; }
         public abstract LocalizedString DisplayName { get; }
         public abstract LocalizedString Description { get; }

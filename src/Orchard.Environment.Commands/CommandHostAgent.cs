@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Orchard.Environment.Shell;
+using Orchard.Environment.Shell.Configuration;
 using Orchard.Environment.Shell.Models;
-using Orchard.Hosting;
-using Orchard.Hosting.ShellBuilders;
 using Orchard.Localization;
 using System;
 using System.Collections.Generic;

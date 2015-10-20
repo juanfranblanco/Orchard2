@@ -124,6 +124,10 @@ namespace Orchard.FileSystem.AppData {
             Directory.CreateDirectory(GetFileInfo(path).PhysicalPath);
         }
 
+        public bool DirectoryExists(string path) {
+            return GetFileInfo(path).Exists;
+        }
+
         public DateTime GetFileLastWriteTimeUtc(string path) {
             return File.GetLastWriteTimeUtc(GetFileInfo(path).PhysicalPath);
         }

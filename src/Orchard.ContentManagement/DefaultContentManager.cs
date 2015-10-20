@@ -302,6 +302,17 @@ namespace Orchard.ContentManagement {
             }
         }
 
+        public ContentItemMetadata GetItemMetadata(IContent content) {
+            var context = new GetContentItemMetadataContext {
+                ContentItem = content.ContentItem,
+                Metadata = new ContentItemMetadata()
+            };
+
+            Handlers.Invoke(handler => handler.GetContentItemMetadata(context), _logger);
+
+            return context.Metadata;
+        }
+
         private ContentTypeRecord AcquireContentTypeRecord(string contentType) {
             
             var contentTypeRecord = _contentStorageManager

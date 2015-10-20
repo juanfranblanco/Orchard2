@@ -1,9 +1,8 @@
-﻿using Orchard.Environment.Shell;
-using Orchard.Hosting.ShellBuilders;
-
-namespace Orchard.Hosting {
+﻿namespace Orchard.Environment.Shell {
     public interface IOrchardHost {
         void Initialize();
+
+        ShellContext GetShellContext(ShellSettings shellSettings);
 
         ShellContext CreateShellContext(ShellSettings settings);
     }

@@ -54,8 +54,6 @@ The Host has a small wrapper
 public static IServiceCollection AddHostSample([NotNull] this IServiceCollection services) {
     // This will setup all your core services for a host
     return services.AddHost(internalServices => {
-        // The core of the host
-        internalServices.AddHostCore();
         //... All extra things you want registered so that you don't have to touch the core host.
     });
 ```
@@ -67,8 +65,6 @@ Additional locations for module discovery can be added in your host setup.
 ```c#
 public static IServiceCollection AddHostSample([NotNull] this IServiceCollection services) {
     return services.AddHost(internalServices => {
-        internalServices.AddHostCore();
-
         // Add folders the easy way
         internalServices.AddModuleFolder("~/Core/Orchard.Core");
         internalServices.AddModuleFolder("~/Modules");

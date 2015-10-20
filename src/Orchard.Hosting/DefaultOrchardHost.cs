@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 using Orchard.Environment.Shell;
 using Orchard.Environment.Shell.Builders;
+using Orchard.Environment.Shell.Configuration;
 using Orchard.Environment.Shell.Descriptor;
 using Orchard.Environment.Shell.Descriptor.Models;
 using Orchard.Environment.Shell.Models;
-using Orchard.Hosting.ShellBuilders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +30,10 @@ namespace Orchard.Hosting {
             _shellContextFactory = shellContextFactory;
             _runningShellTable = runningShellTable;
             _logger = loggerFactory.CreateLogger<DefaultOrchardHost>();
+        }
+
+        public ShellContext GetShellContext(ShellSettings shellSettings) {
+            return BuildCurrent().SingleOrDefault(shellContext => shellContext.Settings.Name.Equals(shellSettings.Name));
         }
 
         void IOrchardHost.Initialize() {

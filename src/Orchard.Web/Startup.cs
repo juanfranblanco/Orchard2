@@ -2,6 +2,7 @@ using Microsoft.AspNet.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Orchard.Environment.Extensions.Folders;
+using Orchard.Environment.Shell;
 using Orchard.Hosting;
 using System;
 

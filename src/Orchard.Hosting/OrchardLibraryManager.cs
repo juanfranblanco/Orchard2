@@ -5,7 +5,7 @@ using Microsoft.Dnx.Runtime;
 using Orchard.DependencyInjection;
 
 namespace Orchard.Hosting {
-    public class OrchardLibraryManager : IOrchardLibraryManager {
+    internal class OrchardLibraryManager : IOrchardLibraryManager {
         private readonly ILibraryManager _libraryManager;
 
         public OrchardLibraryManager(ILibraryManager libraryManager) {

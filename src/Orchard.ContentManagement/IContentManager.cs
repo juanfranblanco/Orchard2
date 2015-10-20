@@ -47,6 +47,8 @@ namespace Orchard.ContentManagement {
 
         void Publish(ContentItem contentItem);
         void Unpublish(ContentItem contentItem);
+
+        ContentItemMetadata GetItemMetadata(IContent contentItem);
     }
     
     public class VersionOptions {

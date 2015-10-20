@@ -7,7 +7,7 @@ using Microsoft.Dnx.Compilation.Caching;
 using Orchard.Parser;
 using Orchard.Parser.Yaml;
 
-namespace Orchard.Environment.Shell {
+namespace Orchard.Environment.Shell.Configuration {
     public class ShellSettingsManager : IShellSettingsManager {
         private readonly IAppDataFolder _appDataFolder;
         private readonly ICache _cache;

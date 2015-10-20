@@ -3,9 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 
-#if DNXCORE50
-#endif
-
 namespace Orchard.Environment.Shell.Builders {
     public static class ServiceExtensions
     {

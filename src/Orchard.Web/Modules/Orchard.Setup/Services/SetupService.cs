@@ -1,17 +1,24 @@
-using Orchard.Hosting;
-using System;
-using System.Linq;
 using Microsoft.AspNet.Http;
-using Orchard.Environment.Extensions;
-using Orchard.Environment.Shell.Descriptor.Models;
-using Orchard.Environment.Shell.Builders;
-using Orchard.Environment.Shell;
-using Orchard.Environment.Shell.Models;
-using Orchard.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Orchard.Hosting.ShellBuilders;
+using Orchard.DependencyInjection;
+using Orchard.Environment.Extensions;
+using Orchard.Environment.Recipes.Models;
+using Orchard.Environment.Recipes.Services;
+using Orchard.Environment.Shell;
+using Orchard.Environment.Shell.Builders;
+using Orchard.Environment.Shell.Configuration;
+using Orchard.Environment.Shell.Descriptor.Models;
+using Orchard.Environment.Shell.Models;
+using Orchard.Utility;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Xml.Linq;
 
 namespace Orchard.Setup.Services {
+    [OrchardFeature("Orchard.Setup.Services")]
     public class SetupService : Component, ISetupService {
         private readonly ShellSettings _shellSettings;
         private readonly IOrchardHost _orchardHost;
@@ -21,7 +28,8 @@ namespace Orchard.Setup.Services {
         private readonly IExtensionManager _extensionManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IRunningShellTable _runningShellTable;
-        private readonly ILogger _logger;
+        private readonly IRecipeHarvester _recipeHarvester;
+        private IEnumerable<Recipe> _recipes;
 
         public SetupService(
             ShellSettings shellSettings,
@@ -32,7 +40,8 @@ namespace Orchard.Setup.Services {
             IExtensionManager extensionManager,
             IHttpContextAccessor httpContextAccessor,
             IRunningShellTable runningShellTable,
-            ILoggerFactory loggerFactory) {
+            ILoggerFactory loggerFactory,
+            IRecipeHarvester recipeHarvester) : base(loggerFactory) {
 
             _shellSettings = shellSettings;
             _orchardHost = orchardHost;
@@ -42,11 +51,20 @@ namespace Orchard.Setup.Services {
             _extensionManager = extensionManager;
             _httpContextAccessor = httpContextAccessor;
             _runningShellTable = runningShellTable;
-            _logger = loggerFactory.CreateLogger<SetupService>();
+            _recipeHarvester = recipeHarvester;
         }
 
         public ShellSettings Prime() {
             return _shellSettings;
+        }
+
+        public IEnumerable<Recipe> Recipes() {
+            if (_recipes == null) {
+                var recipes = new List<Recipe>();
+                recipes.AddRange(_recipeHarvester.HarvestRecipes().Where(recipe => recipe.IsSetupRecipe));
+                _recipes = recipes;
+            }
+            return _recipes;
         }
 
         public string Setup(SetupContext context) {
@@ -63,7 +81,7 @@ namespace Orchard.Setup.Services {
         public string SetupInternal(SetupContext context) {
             string executionId;
 
-            _logger.LogInformation("Running setup for tenant '{0}'.", _shellSettings.Name);
+            Logger.LogInformation("Running setup for tenant '{0}'.", _shellSettings.Name);
 
             // The vanilla Orchard distibution has the following features enabled.
             string[] hardcoded = {
@@ -84,16 +102,17 @@ namespace Orchard.Setup.Services {
 
             //if (shellSettings.DataProviders.Any()) {
             //    DataProvider provider = new DataProvider();
-                //shellSettings.DataProvider = context.DatabaseProvider;
-                //shellSettings.DataConnectionString = context.DatabaseConnectionString;
-                //shellSettings.DataTablePrefix = context.DatabaseTablePrefix;
+            //shellSettings.DataProvider = context.DatabaseProvider;
+            //shellSettings.DataConnectionString = context.DatabaseConnectionString;
+            //shellSettings.DataTablePrefix = context.DatabaseTablePrefix;
             //}
 
-            // TODO: Add Encryption Settings in
 
             var shellDescriptor = new ShellDescriptor {
                 Features = context.EnabledFeatures.Select(name => new ShellFeature { Name = name })
             };
+
+            var shellBlueprint = _compositionStrategy.Compose(shellSettings, shellDescriptor);
 
             // creating a standalone environment. 
             // in theory this environment can be used to resolve any normal components by interface, and those
@@ -112,7 +131,15 @@ namespace Orchard.Setup.Services {
 
         private string CreateTenantData(SetupContext context, ShellContext shellContext) {
             // must mark state as Running - otherwise standalone enviro is created "for setup"
-            
+
+            var recipeManager = shellContext.LifetimeScope.GetService<IRecipeManager>();
+            var recipe = context.Recipe;
+            var executionId = recipeManager.Execute(recipe);
+
+            // Once the recipe has finished executing, we need to update the shell state to "Running", so add a recipe step that does exactly that.
+            var recipeStepQueue = shellContext.LifetimeScope.GetService<IRecipeStepQueue>();
+            var activateShellStep = new RecipeStep(Guid.NewGuid().ToString("N"), recipe.Name, "ActivateShell", new XElement("ActivateShell"));
+            recipeStepQueue.Enqueue(executionId, activateShellStep);
 
             return Guid.NewGuid().ToString();
         }

@@ -3,12 +3,14 @@ using System.Linq;
 using System.Xml.Linq;
 using Orchard.DependencyInjection;
 using Orchard.Services;
+using Microsoft.Extensions.Logging;
 
 namespace Orchard.Environment.Recipes.Services {
     public class RecipeBuilder : Component, IRecipeBuilder {
         private readonly IClock _clock;
 
-        public RecipeBuilder(IClock clock) {
+        public RecipeBuilder(IClock clock,
+            ILoggerFactory loggerFactory) : base(loggerFactory) {
             _clock = clock;
         }
 

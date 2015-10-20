@@ -2,8 +2,10 @@
   "version": "2.0.0-*",
   "dependencies": {
     "Microsoft.AspNet.Mvc.Core": "6.0.0-*",
+    "Orchard.Environment.Recipies": "2.0.0-*",
     "Orchard.Hosting": "2.0.0-*",
-    "Orchard.Hosting.Web": "2.0.0-*"
+    "Orchard.Hosting.Web": "2.0.0-*",
+    "Orchard.Recipies": "2.0.0-*"
   },
   "compilationOptions": {
     "define": [ "TRACE" ],
@@ -11,7 +13,11 @@
   },
   "frameworks": {
     "dnx451": { },
-    "dnxcore50": { }
+    "dnxcore50": {
+      "dependencies": {
+        "System.Security.Cryptography.Primitives": "4.0.0-*" 
+      }
+    }
   },
   "repository": {
     "type": "git",

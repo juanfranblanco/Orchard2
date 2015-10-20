@@ -6,23 +6,22 @@ using Orchard.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Orchard.Environment.Shell.Descriptor.Settings.Records;
 using Orchard.Environment.Shell.Descriptor.Models;
+using Orchard.Events;
 
 namespace Orchard.Environment.Shell.Descriptor.Settings {
     public class ShellDescriptorManager : Component, IShellDescriptorManager {
         private readonly IContentStorageManager _contentStorageManager;
         private readonly ShellSettings _shellSettings;
-        //private readonly IEventNotifier _eventNotifier;
-        private readonly ILogger _logger;
+        private readonly IEventNotifier _eventNotifier;
 
         public ShellDescriptorManager(
             IContentStorageManager contentStorageManager,
             ShellSettings shellSettings,
-            //IEventNotifier eventNotifier,
-            ILoggerFactory loggerFactory) {
+            IEventNotifier eventNotifier,
+            ILoggerFactory loggerFactory) : base(loggerFactory) {
             _contentStorageManager = contentStorageManager;
             _shellSettings = shellSettings;
-            //_eventNotifier = eventNotifier;
-            _logger = loggerFactory.CreateLogger<ShellDescriptorManager>();
+            _eventNotifier = eventNotifier;
         }
 
         public ShellDescriptor GetShellDescriptor() {
@@ -62,7 +61,7 @@ namespace Orchard.Environment.Shell.Descriptor.Settings {
             if (priorSerialNumber != serialNumber)
                 throw new InvalidOperationException(T("Invalid serial number for shell descriptor").ToString());
 
-            _logger.LogInformation("Updating shell descriptor for shell '{0}'...", _shellSettings.Name);
+            Logger.LogInformation("Updating shell descriptor for shell '{0}'...", _shellSettings.Name);
 
             if (shellDescriptorRecord == null) {
                 shellDescriptorRecord = new ShellDescriptorRecord { SerialNumber = 1 };
@@ -76,7 +75,7 @@ namespace Orchard.Environment.Shell.Descriptor.Settings {
             foreach (var feature in enabledFeatures) {
                 shellDescriptorRecord.Features.Add(new ShellFeatureRecord { Name = feature.Name, ShellDescriptorRecord = shellDescriptorRecord });
             }
-            _logger.LogDebug("Enabled features for shell '{0}' set: {1}.", _shellSettings.Name, string.Join(", ", enabledFeatures.Select(feature => feature.Name)));
+            Logger.LogDebug("Enabled features for shell '{0}' set: {1}.", _shellSettings.Name, string.Join(", ", enabledFeatures.Select(feature => feature.Name)));
 
 
             shellDescriptorRecord.Parameters.Clear();
@@ -88,12 +87,12 @@ namespace Orchard.Environment.Shell.Descriptor.Settings {
                     ShellDescriptorRecord = shellDescriptorRecord
                 });
             }
-            _logger.LogDebug("Parameters for shell '{0}' set: {1}.", _shellSettings.Name, string.Join(", ", parameters.Select(parameter => parameter.Name + "-" + parameter.Value)));
+            Logger.LogDebug("Parameters for shell '{0}' set: {1}.", _shellSettings.Name, string.Join(", ", parameters.Select(parameter => parameter.Name + "-" + parameter.Value)));
 
-            _logger.LogInformation("Shell descriptor updated for shell '{0}'.", _shellSettings.Name);
+            Logger.LogInformation("Shell descriptor updated for shell '{0}'.", _shellSettings.Name);
 
-            //_eventNotifier.Notify<IShellDescriptorManagerEventHandler>(
-            //    e => e.Changed(GetShellDescriptorFromRecord(shellDescriptorRecord), _shellSettings.Name));
+            _eventNotifier.Notify<IShellDescriptorManagerEventHandler>(
+                e => e.Changed(GetShellDescriptorFromRecord(shellDescriptorRecord), _shellSettings.Name));
         }
     }
 }
