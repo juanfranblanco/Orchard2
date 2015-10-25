@@ -8,6 +8,7 @@ using Orchard.Environment.Shell.Builders;
 using Orchard.Services;
 using Orchard.Hosting.Services;
 using Orchard.Environment.Shell.Configuration;
+using Orchard.Environment.Shell.State;
 
 namespace Orchard.Hosting {
     public static class HostServiceExtensions {
@@ -26,6 +27,7 @@ namespace Orchard.Hosting {
 
                     services.AddSingleton<IShellContainerFactory, ShellContainerFactory>();
                 }
+                services.AddSingleton<IProcessingEngine, DefaultProcessingEngine>();
             }
             services.AddSingleton<IRunningShellTable, RunningShellTable>();
 

@@ -1,11 +1,18 @@
-﻿using Orchard.Data.Conventions;
+﻿using Orchard.ContentManagement;
+using Orchard.ContentManagement.Records;
+using Orchard.Data.Conventions;
 
 namespace Orchard.Core.Settings.Metadata.Records {
-    public class ContentPartFieldDefinitionRecord {
-        public virtual int Id { get; set; }
+    public class ContentPartFieldDefinitionRecord : DocumentRecord {
         public virtual ContentFieldDefinitionRecord ContentFieldDefinitionRecord { get; set; }
-        public virtual string Name { get; set; }
+        public string Name {
+            get { return this.RetrieveValue(x => x.Name); }
+            set { this.StoreValue(x => x.Name, value); }
+        }
         [StringLengthMax]
-        public virtual string Settings { get; set; }
+        public string Settings {
+            get { return this.RetrieveValue(x => x.Settings); }
+            set { this.StoreValue(x => x.Settings, value); }
+        }
     }
 }

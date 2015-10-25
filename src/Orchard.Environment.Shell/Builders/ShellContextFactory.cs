@@ -35,7 +35,7 @@ namespace Orchard.Environment.Shell.Builders {
                     Descriptor = currentDescriptor,
                     Blueprint = blueprint,
                     LifetimeScope = shellScope,
-                    Shell = shellScope.GetRequiredService<IOrchardShell>()
+                    Shell = shellScope.GetService<IOrchardShell>()
                 };
 
                 _logger.LogVerbose("Created shell context for tenant {0} in {1}ms", settings.Name, sw.ElapsedMilliseconds);
