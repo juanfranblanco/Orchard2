@@ -1,6 +1,6 @@
-﻿using Microsoft.Dnx.Runtime;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.PlatformAbstractions;
 using System;
 
 namespace Orchard.Environment.Shell.Builders {

@@ -62,7 +62,7 @@ namespace Orchard.Environment.Shell {
         /// </summary>
         public string RequestUrlHost
         {
-            get { return RootConfiguration["RequestUrlHost"]; }
+            get { return StringNullReconfiguration(RootConfiguration["RequestUrlHost"]); }
             set { RootConfiguration["RequestUrlHost"] = value; }
         }
 
@@ -71,7 +71,7 @@ namespace Orchard.Environment.Shell {
         /// </summary>
         public string RequestUrlPrefix
         {
-            get { return RootConfiguration["RequestUrlPrefix"]; }
+            get { return StringNullReconfiguration(RootConfiguration["RequestUrlPrefix"]); }
             set { RootConfiguration["RequestUrlPrefix"] = value; }
         }
 
@@ -84,6 +84,13 @@ namespace Orchard.Environment.Shell {
                 _tenantState = value;
                 RootConfiguration["State"] = value.ToString();
             }
+        }
+
+        private string StringNullReconfiguration(string value) {
+            if (value.Equals("null", StringComparison.CurrentCultureIgnoreCase)) {
+                return null;
+            }
+            return value;
         }
     }
 }
