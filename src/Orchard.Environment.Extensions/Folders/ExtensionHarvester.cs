@@ -308,10 +308,10 @@ namespace Orchard.Environment.Extensions.Folders {
         private static bool IsFeatureDeclaration(string line) {
             int lineLength = line.Length;
             if (line.StartsWith("\t") && lineLength >= 2) {
-                return !Char.IsWhiteSpace(line[1]);
+                return !char.IsWhiteSpace(line[1]);
             }
             if (line.StartsWith("    ") && lineLength >= 5)
-                return !Char.IsWhiteSpace(line[4]);
+                return !char.IsWhiteSpace(line[4]);
 
             return false;
         }

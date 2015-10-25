@@ -10,11 +10,9 @@ using Orchard.Environment.Shell.Builders;
 using Orchard.Environment.Shell.Configuration;
 using Orchard.Environment.Shell.Descriptor.Models;
 using Orchard.Environment.Shell.Models;
-using Orchard.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Xml.Linq;
 
 namespace Orchard.Setup.Services {
@@ -25,8 +23,6 @@ namespace Orchard.Setup.Services {
         private readonly IShellSettingsManager _shellSettingsManager;
         private readonly IShellContainerFactory _shellContainerFactory;
         private readonly ICompositionStrategy _compositionStrategy;
-        private readonly IExtensionManager _extensionManager;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IRunningShellTable _runningShellTable;
         private readonly IRecipeHarvester _recipeHarvester;
         private IEnumerable<Recipe> _recipes;
@@ -37,19 +33,15 @@ namespace Orchard.Setup.Services {
             IShellSettingsManager shellSettingsManager,
             IShellContainerFactory shellContainerFactory,
             ICompositionStrategy compositionStrategy,
-            IExtensionManager extensionManager,
-            IHttpContextAccessor httpContextAccessor,
             IRunningShellTable runningShellTable,
-            ILoggerFactory loggerFactory,
-            IRecipeHarvester recipeHarvester) : base(loggerFactory) {
+            IRecipeHarvester recipeHarvester,
+            ILoggerFactory loggerFactory) : base(loggerFactory) {
 
             _shellSettings = shellSettings;
             _orchardHost = orchardHost;
             _shellSettingsManager = shellSettingsManager;
             _shellContainerFactory = shellContainerFactory;
             _compositionStrategy = compositionStrategy;
-            _extensionManager = extensionManager;
-            _httpContextAccessor = httpContextAccessor;
             _runningShellTable = runningShellTable;
             _recipeHarvester = recipeHarvester;
         }
@@ -90,7 +82,7 @@ namespace Orchard.Setup.Services {
                 // Core
                 "Settings",
                 // Test Modules
-                "Orchard.Demo", "Orchard.Test1"
+                "Orchard.Demo", "Orchard.Recipes"
                 };
 
             context.EnabledFeatures = hardcoded.Union(context.EnabledFeatures ?? Enumerable.Empty<string>()).Distinct().ToList();

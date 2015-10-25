@@ -1,39 +1,55 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Orchard.Localization;
-using System.Reflection;
-using System.Linq;
+using System;
 using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace Orchard.Events {
     public class DefaultOrchardEventBus : IEventBus {
-        private readonly IDictionary<string, IList<IEventHandler>> _eventHandlers;
+        private readonly IServiceProvider _serviceProvider;
+
+        private Lazy<IDictionary<string, IList<IEventHandler>>> LazyHandlers;
+
+        private IDictionary<string, IList<IEventHandler>> _eventHandlers { get { return LazyHandlers.Value; } }
         private static readonly ConcurrentDictionary<string, Tuple<ParameterInfo[], Func<IEventHandler, object[], object>>> _delegateCache = new ConcurrentDictionary<string, Tuple<ParameterInfo[], Func<IEventHandler, object[], object>>>();
 
-        public DefaultOrchardEventBus(IEnumerable<IEventHandler> eventHandlers) {
-            IDictionary<string, IList<IEventHandler>> localEventHandlers
-                = new Dictionary<string, IList<IEventHandler>>();
+        private readonly ILogger _logger;
 
-            foreach (var eventHandler in eventHandlers) {
-                var interfaces = eventHandler.GetType().GetInterfaces();
-                foreach (var interfaceType in interfaces) {
+        public DefaultOrchardEventBus(IServiceProvider serviceProvider,
+            ILoggerFactory loggerFactory) {
+            _serviceProvider = serviceProvider;
 
-                    // register named instance for each interface, for efficient filtering inside event bus
-                    // IEventHandler derived classes only
-                    if (interfaceType.GetInterfaces().Any(x => x.Name == typeof(IEventHandler).Name)) {
-                        if (!localEventHandlers.ContainsKey(interfaceType.Name)) {
-                            localEventHandlers[interfaceType.Name] = new List<IEventHandler> { eventHandler };
-                        }
-                        else {
-                            localEventHandlers[interfaceType.Name].Add(eventHandler);
+            LazyHandlers = new Lazy<IDictionary<string, IList<IEventHandler>>>(() => {
+                var eventHandlers = _serviceProvider.GetService<IEnumerable<IEventHandler>>();
+                IDictionary<string, IList<IEventHandler>> localEventHandlers
+                    = new Dictionary<string, IList<IEventHandler>>();
+
+                foreach (var eventHandler in eventHandlers) {
+                    var interfaces = eventHandler.GetType().GetInterfaces();
+                    foreach (var interfaceType in interfaces) {
+
+                        // register named instance for each interface, for efficient filtering inside event bus
+                        // IEventHandler derived classes only
+                        if (interfaceType.GetInterfaces().Any(x => x.Name == typeof(IEventHandler).Name)) {
+                            if (!localEventHandlers.ContainsKey(interfaceType.Name)) {
+                                localEventHandlers[interfaceType.Name] = new List<IEventHandler> { eventHandler };
+                            }
+                            else {
+                                localEventHandlers[interfaceType.Name].Add(eventHandler);
+                            }
                         }
                     }
                 }
-            }
 
-            _eventHandlers = localEventHandlers;
+                return localEventHandlers;
 
+            });
+
+            _logger = loggerFactory.CreateLogger<DefaultOrchardEventBus>();
             T = NullLocalizer.Instance;
         }
 
@@ -74,7 +90,8 @@ namespace Orchard.Events {
             try {
                 return TryInvoke(eventHandler, messageName, interfaceName, methodName, eventData, out returnValue);
             }
-            catch {
+            catch (Exception ex) {
+                _logger.LogError("Invoking handler threw error.", ex);
                 returnValue = null;
                 return false;
             }

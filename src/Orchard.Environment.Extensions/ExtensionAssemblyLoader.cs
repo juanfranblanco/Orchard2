@@ -90,12 +90,26 @@ namespace Orchard.Environment.Extensions {
                     .Project
                     .Dependencies
                     .SelectMany(x => Flatten(x))
-                    .Where(x => x.Library.Type == "Package")
+                    .Where(x => x.Library.Type == LibraryTypes.Package)
                     .Distinct()
                     .ToList();
 
                 foreach (var dependency in flattenedList) {
                     foreach (var assemblyToLoad in dependency.Library.Assemblies){
+                        Assembly.Load(new AssemblyName(assemblyToLoad));
+                    }
+                }
+
+                IList<LibraryDependency> otherFlattenedList = moduleContext
+                    .Project
+                    .Dependencies
+                    .SelectMany(x => Flatten(x))
+                    .Where(x => x.Library.Type == LibraryTypes.Project)
+                    .Distinct()
+                    .ToList();
+
+                foreach (var dependency in otherFlattenedList) {
+                    foreach (var assemblyToLoad in dependency.Library.Assemblies) {
                         Assembly.Load(new AssemblyName(assemblyToLoad));
                     }
                 }

@@ -54,6 +54,7 @@ namespace Orchard.Environment.Shell.Builders {
                 Features = new[] {
                     new ShellFeature { Name = "Orchard.Logging.Console" },
                     new ShellFeature { Name = "Orchard.Hosting" },
+                    new ShellFeature { Name = "Orchard.Recipes" },
                     new ShellFeature { Name = "Settings" },
                     new ShellFeature { Name = "Orchard.Demo" },
                     new ShellFeature { Name = "Orchard.Data.EntityFramework" },

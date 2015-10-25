@@ -12,16 +12,16 @@ namespace Orchard.Environment.Shell.Descriptor.Settings {
     public class ShellDescriptorManager : Component, IShellDescriptorManager {
         private readonly IContentStorageManager _contentStorageManager;
         private readonly ShellSettings _shellSettings;
-       // private readonly IEventNotifier _eventNotifier;
+        private readonly IEventNotifier _eventNotifier;
 
         public ShellDescriptorManager(
             IContentStorageManager contentStorageManager,
             ShellSettings shellSettings,
-            //IEventNotifier eventNotifier,
+            IEventNotifier eventNotifier,
             ILoggerFactory loggerFactory) : base(loggerFactory) {
             _contentStorageManager = contentStorageManager;
             _shellSettings = shellSettings;
-            ///_eventNotifier = eventNotifier;
+            _eventNotifier = eventNotifier;
         }
 
         public ShellDescriptor GetShellDescriptor() {
@@ -91,8 +91,8 @@ namespace Orchard.Environment.Shell.Descriptor.Settings {
 
             Logger.LogInformation("Shell descriptor updated for shell '{0}'.", _shellSettings.Name);
 
-            //_eventNotifier.Notify<IShellDescriptorManagerEventHandler>(
-            //    e => e.Changed(GetShellDescriptorFromRecord(shellDescriptorRecord), _shellSettings.Name));
+            _eventNotifier.Notify<IShellDescriptorManagerEventHandler>(
+                e => e.Changed(GetShellDescriptorFromRecord(shellDescriptorRecord), _shellSettings.Name));
         }
     }
 }

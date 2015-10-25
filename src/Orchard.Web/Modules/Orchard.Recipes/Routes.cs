@@ -7,7 +7,7 @@ namespace Orchard.Recipes {
             return new[] {
                 new RouteDescriptor {
                     Route = new Route(
-                        "Recipies",
+                        "Recipes",
                         "Recipes/Status/{executionId}",
                         defaults:  new
                             {

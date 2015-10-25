@@ -36,8 +36,6 @@ namespace Orchard.Data.EntityFramework {
             _logger.LogInformation("[{0}]: Mapping Records to DB Context", GetType().Name);
             var sw = Stopwatch.StartNew();
 
-            var entityMethod = modelBuilder.GetType().GetRuntimeMethod("Entity", new Type[0]);
-
             foreach (var assembly in _assemblyProvider.CandidateAssemblies.Distinct()) {
                 // Keep persistent attribute, but also introduce a convention like ContentPart
                 var entityTypes = assembly
@@ -50,8 +48,7 @@ namespace Orchard.Data.EntityFramework {
                 foreach (var type in entityTypes) {
                     _logger.LogDebug("Mapping record {0}", type.FullName);
 
-                    entityMethod.MakeGenericMethod(type)
-                        .Invoke(modelBuilder, new object[0]);
+                    modelBuilder.Entity(type);
                 }
             }
 

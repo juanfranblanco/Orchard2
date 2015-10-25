@@ -1,0 +1,22 @@
+﻿<?xml version="1.0"?>
+<Orchard>
+  <Recipe>
+    <Name>Default</Name>
+    <Description>The default recipe for an Orchard site.</Description>
+    <Author>The Orchard Team</Author>
+    <WebSite>http://orchardproject.net</WebSite>
+    <Category>Default</Category>
+    <Tags></Tags>
+    <Version>2.0</Version>
+    <IsSetupRecipe>true</IsSetupRecipe>
+  </Recipe>
+
+  <Feature enable="" />
+
+  <Settings />
+
+  <Migration features="*" />
+
+  <Command>
+  </Command>
+</Orchard>

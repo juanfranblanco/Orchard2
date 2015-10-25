@@ -13,7 +13,9 @@
             @Html.TextBoxFor(svm => svm.SiteName, new {autofocus = "autofocus"})
         </div>
     </fieldset>
-
+        @Html.Hidden("AdminUsername", "Default")
+        @Html.Hidden("AdminPassword", "Default")
+        @Html.Hidden("Recipe", "Default")
     <fieldset>
         <button class="primaryAction setupButton" type="submit">Finish Setup</button>
     </fieldset>

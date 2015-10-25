@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -19,21 +20,31 @@ namespace Orchard.Data.EntityFramework {
             get { return _dataContext.Set<InternalIndexDocumentCollection>().AsQueryable(); }
         }
 
+        private readonly IServiceProvider _serviceProvider;
+
         public EFContentQueryStore(IEnumerable<IContentStore> contentStores,
             ILoggerFactory loggerFactory,
-            DataContext dataContext) {
+            DataContext dataContext,
+            IServiceProvider serviceProvider) {
             _contentStores = contentStores;
-            _logger = loggerFactory.CreateLogger<EFContentQueryStore>();
             _dataContext = dataContext;
+            _serviceProvider = serviceProvider;
+
+            _logger = loggerFactory.CreateLogger<EFContentQueryStore>();
         }
 
         public ContentIndexResult<TDocument> Query<TDocument>(Expression<Func<TDocument, bool>> map) where TDocument : StorageDocument {
             var indexName = map.ToString();
             var type = typeof(TDocument);
 
-            if (!_indexCollection.Any(x => x.IndexName == indexName && x.Type == type.ToString())) {
-                CreateIndex(map);
+            using (var dbContext = _serviceProvider.GetService<DataContext>()) {
+
+                if (!dbContext.Set<InternalIndexCollection>().Any(x => x.IndexName == indexName && x.Type == type.ToString())) {
+                    CreateIndex(map);
+                }
+
             }
+
 
             var indexedRecords = _documents
                 .Where(x => x.IndexName == indexName && x.Type == type.ToString());

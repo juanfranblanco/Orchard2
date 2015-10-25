@@ -36,7 +36,9 @@ namespace Orchard.Environment.Extensions {
         }
 
         public IEnumerable<ExtensionDescriptor> AvailableExtensions() {
-            return _extensionLocator.AvailableExtensions().ToList();
+            return _extensionLocator
+                    .AvailableExtensions()
+                    .ToReadOnlyCollection();
         }
 
         public IEnumerable<FeatureDescriptor> AvailableFeatures() {
@@ -86,6 +88,8 @@ namespace Orchard.Environment.Extensions {
         }
 
         private Feature LoadFeature(FeatureDescriptor featureDescriptor) {
+            _logger.LogInformation("Loading feature {0}", featureDescriptor.Name);
+
             var extensionDescriptor = featureDescriptor.Extension;
             var featureId = featureDescriptor.Id;
             var extensionId = extensionDescriptor.Id;

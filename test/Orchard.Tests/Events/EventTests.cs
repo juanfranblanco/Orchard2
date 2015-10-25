@@ -1,4 +1,5 @@
-﻿using Orchard.Events;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Orchard.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,14 @@ namespace Orchard.Tests.Events {
         public void EventsAreCorrectlyDispatchedToEventHandlers() {
             var stub1 = new StubEventHandler();
             var stub2 = new StubEventHandler2();
-            var eventBus = new DefaultOrchardEventBus(new IEventHandler[] { stub1, stub2 });
+
+            var services = new ServiceCollection();
+
+            services.AddScoped<IEventBus, DefaultOrchardEventBus>();
+            services.AddScoped<IEventHandler, StubEventHandler>();
+            services.AddScoped<IEventHandler, StubEventHandler2>();
+
+            var eventBus = services.BuildServiceProvider().GetService<IEventBus>();
 
             Assert.Equal(0, stub1.Count);
             eventBus.Notify("ITestEventHandler.Increment", new Dictionary<string, object>());
@@ -22,7 +30,14 @@ namespace Orchard.Tests.Events {
         public void EventParametersAreCorrectlyPassedToEventHandlers() {
             var stub1 = new StubEventHandler();
             var stub2 = new StubEventHandler2();
-            var eventBus = new DefaultOrchardEventBus(new IEventHandler[] { stub1, stub2 });
+
+            var services = new ServiceCollection();
+
+            services.AddScoped<IEventBus, DefaultOrchardEventBus>();
+            services.AddScoped<IEventHandler, StubEventHandler>();
+            services.AddScoped<IEventHandler, StubEventHandler2>();
+
+            var eventBus = services.BuildServiceProvider().GetService<IEventBus>();
 
             Assert.Equal(0, stub1.Result);
             Dictionary<string, object> arguments = new Dictionary<string, object>();
@@ -37,7 +52,14 @@ namespace Orchard.Tests.Events {
         public void EventParametersArePassedInCorrectOrderToEventHandlers() {
             var stub1 = new StubEventHandler();
             var stub2 = new StubEventHandler2();
-            var eventBus = new DefaultOrchardEventBus(new IEventHandler[] { stub1, stub2 });
+
+            var services = new ServiceCollection();
+
+            services.AddScoped<IEventBus, DefaultOrchardEventBus>();
+            services.AddScoped<IEventHandler, StubEventHandler>();
+            services.AddScoped<IEventHandler, StubEventHandler2>();
+
+            var eventBus = services.BuildServiceProvider().GetService<IEventBus>();
 
             Assert.Equal(0, stub1.Result);
             Dictionary<string, object> arguments = new Dictionary<string, object>();
@@ -51,7 +73,14 @@ namespace Orchard.Tests.Events {
         public void EventParametersAreCorrectlyPassedToMatchingMethod() {
             var stub1 = new StubEventHandler();
             var stub2 = new StubEventHandler2();
-            var eventBus = new DefaultOrchardEventBus(new IEventHandler[] { stub1, stub2 });
+
+            var services = new ServiceCollection();
+
+            services.AddScoped<IEventBus, DefaultOrchardEventBus>();
+            services.AddScoped<IEventHandler, StubEventHandler>();
+            services.AddScoped<IEventHandler, StubEventHandler2>();
+
+            var eventBus = services.BuildServiceProvider().GetService<IEventBus>();
 
             Assert.Null(stub1.Summary);
             Dictionary<string, object> arguments = new Dictionary<string, object>();
@@ -66,7 +95,14 @@ namespace Orchard.Tests.Events {
         public void EventParametersAreCorrectlyPassedToExactlyMatchingMethod() {
             var stub1 = new StubEventHandler();
             var stub2 = new StubEventHandler2();
-            var eventBus = new DefaultOrchardEventBus(new IEventHandler[] { stub1, stub2 });
+
+            var services = new ServiceCollection();
+
+            services.AddScoped<IEventBus, DefaultOrchardEventBus>();
+            services.AddScoped<IEventHandler, StubEventHandler>();
+            services.AddScoped<IEventHandler, StubEventHandler2>();
+
+            var eventBus = services.BuildServiceProvider().GetService<IEventBus>();
 
             Assert.Equal(0, stub1.Result);
             Dictionary<string, object> arguments = new Dictionary<string, object>();
@@ -81,7 +117,14 @@ namespace Orchard.Tests.Events {
         public void EventParametersAreCorrectlyPassedToBestMatchingMethodAndExtraParametersAreIgnored() {
             var stub1 = new StubEventHandler();
             var stub2 = new StubEventHandler2();
-            var eventBus = new DefaultOrchardEventBus(new IEventHandler[] { stub1, stub2 });
+
+            var services = new ServiceCollection();
+
+            services.AddScoped<IEventBus, DefaultOrchardEventBus>();
+            services.AddScoped<IEventHandler, StubEventHandler>();
+            services.AddScoped<IEventHandler, StubEventHandler2>();
+
+            var eventBus = services.BuildServiceProvider().GetService<IEventBus>();
 
             Assert.Equal(0, stub1.Result);
             Dictionary<string, object> arguments = new Dictionary<string, object>();
@@ -97,7 +140,14 @@ namespace Orchard.Tests.Events {
         public void EventParametersAreCorrectlyPassedToBestMatchingMethodAndExtraParametersAreIgnored2() {
             var stub1 = new StubEventHandler();
             var stub2 = new StubEventHandler2();
-            var eventBus = new DefaultOrchardEventBus(new IEventHandler[] { stub1, stub2 });
+
+            var services = new ServiceCollection();
+
+            services.AddScoped<IEventBus, DefaultOrchardEventBus>();
+            services.AddScoped<IEventHandler, StubEventHandler>();
+            services.AddScoped<IEventHandler, StubEventHandler2>();
+
+            var eventBus = services.BuildServiceProvider().GetService<IEventBus>();
 
             Assert.Equal(0, stub1.Result);
             Dictionary<string, object> arguments = new Dictionary<string, object>();
@@ -111,7 +161,14 @@ namespace Orchard.Tests.Events {
         public void EventParametersAreCorrectlyPassedToExactlyMatchingMethodWhenThereIsOne() {
             var stub1 = new StubEventHandler();
             var stub2 = new StubEventHandler2();
-            var eventBus = new DefaultOrchardEventBus(new IEventHandler[] { stub1, stub2 });
+
+            var services = new ServiceCollection();
+
+            services.AddScoped<IEventBus, DefaultOrchardEventBus>();
+            services.AddScoped<IEventHandler, StubEventHandler>();
+            services.AddScoped<IEventHandler, StubEventHandler2>();
+
+            var eventBus = services.BuildServiceProvider().GetService<IEventBus>();
 
             Assert.Equal(0, stub1.Result);
             Dictionary<string, object> arguments = new Dictionary<string, object>();
@@ -125,7 +182,14 @@ namespace Orchard.Tests.Events {
         public void EventParametersAreCorrectlyPassedToExactlyMatchingMethodWhenThereIsOne2() {
             var stub1 = new StubEventHandler();
             var stub2 = new StubEventHandler2();
-            var eventBus = new DefaultOrchardEventBus(new IEventHandler[] { stub1, stub2 });
+
+            var services = new ServiceCollection();
+
+            services.AddScoped<IEventBus, DefaultOrchardEventBus>();
+            services.AddScoped<IEventHandler, StubEventHandler>();
+            services.AddScoped<IEventHandler, StubEventHandler2>();
+
+            var eventBus = services.BuildServiceProvider().GetService<IEventBus>();
 
             Assert.Equal(0, stub1.Result);
             Dictionary<string, object> arguments = new Dictionary<string, object>();
@@ -138,7 +202,14 @@ namespace Orchard.Tests.Events {
         public void EventHandlerWontBeCalledWhenNoParameterMatchExists() {
             var stub1 = new StubEventHandler();
             var stub2 = new StubEventHandler2();
-            var eventBus = new DefaultOrchardEventBus(new IEventHandler[] { stub1, stub2 });
+
+            var services = new ServiceCollection();
+
+            services.AddScoped<IEventBus, DefaultOrchardEventBus>();
+            services.AddScoped<IEventHandler, StubEventHandler>();
+            services.AddScoped<IEventHandler, StubEventHandler2>();
+
+            var eventBus = services.BuildServiceProvider().GetService<IEventBus>();
 
             Assert.Equal(0, stub1.Result);
             Dictionary<string, object> arguments = new Dictionary<string, object>();
@@ -151,7 +222,14 @@ namespace Orchard.Tests.Events {
         public void EventHandlerWontBeCalledWhenNoParameterMatchExists2() {
             var stub1 = new StubEventHandler();
             var stub2 = new StubEventHandler2();
-            var eventBus = new DefaultOrchardEventBus(new IEventHandler[] { stub1, stub2 });
+
+            var services = new ServiceCollection();
+
+            services.AddScoped<IEventBus, DefaultOrchardEventBus>();
+            services.AddScoped<IEventHandler, StubEventHandler>();
+            services.AddScoped<IEventHandler, StubEventHandler2>();
+
+            var eventBus = services.BuildServiceProvider().GetService<IEventBus>();
 
             Assert.Equal(0, stub1.Result);
             Dictionary<string, object> arguments = new Dictionary<string, object>();
@@ -163,7 +241,14 @@ namespace Orchard.Tests.Events {
         public void EventBusThrowsIfMessageNameIsNotCorrectlyFormatted() {
             var stub1 = new StubEventHandler();
             var stub2 = new StubEventHandler2();
-            var eventBus = new DefaultOrchardEventBus(new IEventHandler[] { stub1, stub2 });
+
+            var services = new ServiceCollection();
+
+            services.AddScoped<IEventBus, DefaultOrchardEventBus>();
+            services.AddScoped<IEventHandler, StubEventHandler>();
+            services.AddScoped<IEventHandler, StubEventHandler2>();
+
+            var eventBus = services.BuildServiceProvider().GetService<IEventBus>();
 
             Assert.Throws<ArgumentException>(() => eventBus.Notify("StubEventHandlerIncrement", new Dictionary<string, object>()));
         }
@@ -181,7 +266,14 @@ namespace Orchard.Tests.Events {
         public void EnumerableResultsAreTreatedLikeSelectMany() {
             var stub1 = new StubEventHandler();
             var stub2 = new StubEventHandler2();
-            var eventBus = new DefaultOrchardEventBus(new IEventHandler[] { stub1, stub2 });
+
+            var services = new ServiceCollection();
+
+            services.AddScoped<IEventBus, DefaultOrchardEventBus>();
+            services.AddScoped<IEventHandler, StubEventHandler>();
+            services.AddScoped<IEventHandler, StubEventHandler2>();
+
+            var eventBus = services.BuildServiceProvider().GetService<IEventBus>();
 
             var results = eventBus.Notify("ITestEventHandler.Gather", new Dictionary<string, object> { { "a", 42 }, { "b", "alpha" } }).Cast<string>();
             Assert.Equal(3, results.Count());
@@ -194,7 +286,14 @@ namespace Orchard.Tests.Events {
         public void StringResultsAreTreatedLikeSelect() {
             var stub1 = new StubEventHandler();
             var stub2 = new StubEventHandler2();
-            var eventBus = new DefaultOrchardEventBus(new IEventHandler[] { stub1, stub2 });
+
+            var services = new ServiceCollection();
+
+            services.AddScoped<IEventBus, DefaultOrchardEventBus>();
+            services.AddScoped<IEventHandler, StubEventHandler>();
+            services.AddScoped<IEventHandler, StubEventHandler2>();
+
+            var eventBus = services.BuildServiceProvider().GetService<IEventBus>();
 
             var results = eventBus.Notify("ITestEventHandler.GetString", new Dictionary<string, object>()).Cast<string>();
             Assert.Equal(2, results.Count());
@@ -206,7 +305,14 @@ namespace Orchard.Tests.Events {
         public void NonStringNonEnumerableResultsAreTreatedLikeSelect() {
             var stub1 = new StubEventHandler();
             var stub2 = new StubEventHandler2();
-            var eventBus = new DefaultOrchardEventBus(new IEventHandler[] { stub1, stub2 });
+
+            var services = new ServiceCollection();
+
+            services.AddScoped<IEventBus, DefaultOrchardEventBus>();
+            services.AddScoped<IEventHandler, StubEventHandler>();
+            services.AddScoped<IEventHandler, StubEventHandler2>();
+
+            var eventBus = services.BuildServiceProvider().GetService<IEventBus>();
 
             var results = eventBus.Notify("ITestEventHandler.GetInt", new Dictionary<string, object>()).Cast<int>();
             Assert.Equal(2, results.Count());

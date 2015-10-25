@@ -2,8 +2,8 @@
 AntiForgery: enabled
 Author: The Orchard Team
 Website: http://orchardproject.net
-Version: 1.9.2
-OrchardVersion: 1.9
+Version: 2.0.x
+OrchardVersion: 2.0.x
 Description: Provides Orchard Recipes.
 FeatureDescription: Implementation of Orchard recipes.
 Category: Core

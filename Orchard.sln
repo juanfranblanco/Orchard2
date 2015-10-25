@@ -77,13 +77,13 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Orchard.Environment.Shell.A
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Orchard.Environment.Shell", "src\Orchard.Environment.Shell\Orchard.Environment.Shell.xproj", "{4C2F50F1-666E-497A-9498-A3494387A0CF}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Orchard.Environment.Recipies", "src\Orchard.Environment.Recipies\Orchard.Environment.Recipies.xproj", "{7CAD05EF-1081-4479-872E-E67444023605}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Orchard.Environment.Recipes", "src\Orchard.Environment.Recipes\Orchard.Environment.Recipes.xproj", "{7CAD05EF-1081-4479-872E-E67444023605}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Orchard.ContentManagement.Abstractions", "src\Orchard.ContentManagement.Abstractions\Orchard.ContentManagement.Abstractions.xproj", "{FD49E3DD-6415-47C2-BEB9-8C26C3DBB49D}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Orchard.Environment.Commands", "src\Orchard.Environment.Commands\Orchard.Environment.Commands.xproj", "{8E85C4F6-19C9-47E0-ADD4-0104B008BFF8}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Orchard.Recipies", "src\Orchard.Web\Modules\Orchard.Recipies\Orchard.Recipies.xproj", "{FF14D9EF-0AC5-4114-9BF6-9433CF6AC73F}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Orchard.Recipes", "src\Orchard.Web\Modules\Orchard.Recipes\Orchard.Recipes.xproj", "{FF14D9EF-0AC5-4114-9BF6-9433CF6AC73F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

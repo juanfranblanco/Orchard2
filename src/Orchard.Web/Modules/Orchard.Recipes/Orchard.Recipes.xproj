@@ -8,7 +8,7 @@
   <Import Project="$(VSToolsPath)\DNX\Microsoft.DNX.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
     <ProjectGuid>ff14d9ef-0ac5-4114-9bf6-9433cf6ac73f</ProjectGuid>
-    <RootNamespace>Orchard.Recipies</RootNamespace>
+    <RootNamespace>Orchard.Recipes</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">..\..\..\..\artifacts\obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">..\..\..\..\artifacts\bin\$(MSBuildProjectName)\</OutputPath>
   </PropertyGroup>

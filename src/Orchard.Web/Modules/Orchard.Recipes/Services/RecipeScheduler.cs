@@ -1,19 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Orchard.DependencyInjection;
 using Orchard.Environment.Recipes.Events;
 using Orchard.Environment.Recipes.Services;
-using Orchard.Environment.Shell.Descriptor;
 using Orchard.Environment.Shell;
-using Orchard.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Orchard.Environment.Shell.Descriptor;
 using Orchard.Environment.Shell.State;
+using System;
+using System.Collections.Generic;
 
 namespace Orchard.Recipes.Services {
     public class RecipeScheduler : Component, IRecipeScheduler, IRecipeSchedulerEventHandler {
         private readonly IProcessingEngine _processingEngine;
         private readonly ShellSettings _shellSettings;
         private readonly IShellDescriptorManager _shellDescriptorManager;
-        private readonly Lazy<IRecipeStepExecutor> _recipeStepExecutor;
+        private readonly IServiceProvider _serviceLocator;
         private readonly IShellDescriptorManagerEventHandler _events;
 
         private readonly ContextState<string> _executionIds = new ContextState<string>("executionid");
@@ -22,13 +23,13 @@ namespace Orchard.Recipes.Services {
             IProcessingEngine processingEngine,
             ShellSettings shellSettings,
             IShellDescriptorManager shellDescriptorManager,
-            Lazy<IRecipeStepExecutor> recipeStepExecutor,
+            IServiceProvider serviceLocator,
             IShellDescriptorManagerEventHandler events,
             ILoggerFactory loggerFactory) : base(loggerFactory) {
             _processingEngine = processingEngine;
             _shellSettings = shellSettings;
             _shellDescriptorManager = shellDescriptorManager;
-            _recipeStepExecutor = recipeStepExecutor;
+            _serviceLocator = serviceLocator;
             _events = events;
         }
 
@@ -46,7 +47,7 @@ namespace Orchard.Recipes.Services {
             _executionIds.SetState(executionId);
             try {
                 // todo: this callback should be guarded against concurrency by the IProcessingEngine
-                var scheduleMore = _recipeStepExecutor.Value.ExecuteNextStep(executionId);
+                var scheduleMore = _serviceLocator.GetService<IRecipeStepExecutor>().ExecuteNextStep(executionId);
                 if (scheduleMore) {
                     Logger.LogInformation("Scheduling next step of recipe.");
                     ScheduleWork(executionId);
