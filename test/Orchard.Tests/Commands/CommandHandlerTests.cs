@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Orchard.Tests.Commands {
@@ -204,7 +203,7 @@ namespace Orchard.Tests.Commands {
                 trace += " : Entering Level 2";
             }
 
-            if (!String.IsNullOrEmpty(User)) {
+            if (!string.IsNullOrEmpty(User)) {
                 trace += " : current user is " + User;
             }
 

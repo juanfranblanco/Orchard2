@@ -19,12 +19,8 @@ namespace Orchard.ContentManagement.Handlers {
         protected virtual void Unpublished(PublishContentContext context, TPart instance) { }
         protected virtual void Removing(RemoveContentContext context, TPart instance) { }
         protected virtual void Removed(RemoveContentContext context, TPart instance) { }
-        //protected virtual void Indexing(IndexContentContext context, TPart instance) { }
-        //protected virtual void Indexed(IndexContentContext context, TPart instance) { }
-        //protected virtual void Restoring(RestoreContentContext context, TPart instance) { }
-        //protected virtual void Restored(RestoreContentContext context, TPart instance) { }
-        //protected virtual void Destroying(DestroyContentContext context, TPart instance) { }
-        //protected virtual void Destroyed(DestroyContentContext context, TPart instance) { }
+        protected virtual void Exporting(ExportContentContext context, TPart instance) { }
+        protected virtual void Exported(ExportContentContext context, TPart instance) { }
 
         void IContentStorageFilter.Activated(ActivatedContentContext context) {
             if (context.ContentItem.Is<TPart>())
@@ -111,34 +107,14 @@ namespace Orchard.ContentManagement.Handlers {
                 Removed(context, context.ContentItem.As<TPart>());
         }
 
-        //void IContentStorageFilter.Indexing(IndexContentContext context) {
-        //    if ( context.ContentItem.Is<TPart>() )
-        //        Indexing(context, context.ContentItem.As<TPart>());
-        //}
+        void IContentStorageFilter.Exporting(ExportContentContext context) {
+            if (context.ContentItem.Is<TPart>())
+                Exporting(context, context.ContentItem.As<TPart>());
+        }
 
-        //void IContentStorageFilter.Indexed(IndexContentContext context) {
-        //    if ( context.ContentItem.Is<TPart>() )
-        //        Indexed(context, context.ContentItem.As<TPart>());
-        //}
-
-        //void IContentStorageFilter.Restoring(RestoreContentContext context) {
-        //    if (context.ContentItem.Is<TPart>())
-        //        Restoring(context, context.ContentItem.As<TPart>());
-        //}
-
-        //void IContentStorageFilter.Restored(RestoreContentContext context) {
-        //    if (context.ContentItem.Is<TPart>())
-        //        Restored(context, context.ContentItem.As<TPart>());
-        //}
-
-        //void IContentStorageFilter.Destroying(DestroyContentContext context) {
-        //    if (context.ContentItem.Is<TPart>())
-        //        Destroying(context, context.ContentItem.As<TPart>());
-        //}
-
-        //void IContentStorageFilter.Destroyed(DestroyContentContext context) {
-        //    if (context.ContentItem.Is<TPart>())
-        //        Destroyed(context, context.ContentItem.As<TPart>());
-        //}
+        void IContentStorageFilter.Exported(ExportContentContext context) {
+            if (context.ContentItem.Is<TPart>())
+                Exported(context, context.ContentItem.As<TPart>());
+        }
     }
 }

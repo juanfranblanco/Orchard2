@@ -7,9 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Orchard.Recipes.Providers.Builders {
     public class RecipeMetadataStep : RecipeBuilderStep {
-        private readonly IOrchardServices _orchardServices;
-        public RecipeMetadataStep(IOrchardServices orchardServices, ILoggerFactory loggerFactory) : base(loggerFactory) {
-        _orchardServices = orchardServices;
+        public RecipeMetadataStep(ILoggerFactory loggerFactory) : base(loggerFactory) {
         }
 
         public override string Name {
@@ -42,7 +40,7 @@ namespace Orchard.Recipes.Providers.Builders {
 
         public override dynamic UpdateEditor(dynamic shapeFactory, IUpdateModel updater) {
             var viewModel = new SetupRecipeStepViewModel {
-                RecipeAuthor = _orchardServices.WorkContext.CurrentUser.UserName
+                RecipeAuthor = "Nick Mayne"
             };
 
             if (updater != null && updater.TryUpdateModel(viewModel, Prefix, null, null)) {

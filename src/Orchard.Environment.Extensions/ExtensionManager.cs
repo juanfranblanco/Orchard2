@@ -113,7 +113,7 @@ namespace Orchard.Environment.Extensions {
 
             foreach (var type in extensionTypes) {
                 string sourceFeature = GetSourceFeatureNameForType(type, extensionId);
-                if (String.Equals(sourceFeature, featureId, StringComparison.OrdinalIgnoreCase)) {
+                if (string.Equals(sourceFeature, featureId, StringComparison.OrdinalIgnoreCase)) {
                     featureTypes.Add(type);
                 }
             }

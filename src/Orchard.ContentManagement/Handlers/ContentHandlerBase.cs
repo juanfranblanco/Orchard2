@@ -18,8 +18,8 @@
         public virtual void Unpublished(PublishContentContext context) { }
         public virtual void Removing(RemoveContentContext context) { }
         public virtual void Removed(RemoveContentContext context) { }
-        //public virtual void Indexing(IndexContentContext context) { }
-        //public virtual void Indexed(IndexContentContext context) { }
+        public virtual void Exporting(ExportContentContext context) { }
+        public virtual void Exported(ExportContentContext context) { }
 
         public virtual void GetContentItemMetadata(GetContentItemMetadataContext context) { }
     }

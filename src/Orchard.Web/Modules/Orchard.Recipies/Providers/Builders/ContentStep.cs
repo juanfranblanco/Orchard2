@@ -11,22 +11,29 @@ using Orchard.Environment.Recipes.Services;
 using Microsoft.Extensions.Localization;
 using Orchard.Environment.Recipes.Models;
 using Microsoft.Extensions.Logging;
+using Orchard.ContentManagement.Data;
 
 namespace Orchard.Recipes.Providers.Builders {
     public class ContentStep : RecipeBuilderStep {
         private readonly IContentDefinitionManager _contentDefinitionManager;
         private readonly IContentManager _contentManager;
         private readonly IContentDefinitionWriter _contentDefinitionWriter;
+        private readonly IContentExporter _contentExporter;
+        private readonly IContentItemStore _contentItemStore;
 
         public ContentStep(
             IContentDefinitionManager contentDefinitionManager,
             IContentManager contentManager,
             IContentDefinitionWriter contentDefinitionWriter,
+            IContentExporter contentExporter,
+            IContentItemStore contentItemStore,
             ILoggerFactory loggerFactory) : base(loggerFactory) {
 
             _contentDefinitionManager = contentDefinitionManager;
             _contentManager = contentManager;
             _contentDefinitionWriter = contentDefinitionWriter;
+            _contentExporter = contentExporter;
+            _contentItemStore = contentItemStore;
 
             VersionHistoryOptions = VersionHistoryOptions.Published;
             SchemaContentTypes = new List<string>();
@@ -80,10 +87,10 @@ namespace Orchard.Recipes.Providers.Builders {
             var dataContentTypeNames = context.ConfigurationElement.Attr("DataContentTypes");
             var versionHistoryOptions = context.ConfigurationElement.Attr<VersionHistoryOptions>("VersionHistoryOptions");
 
-            if (!String.IsNullOrWhiteSpace(schemaContentTypeNames))
+            if (!string.IsNullOrWhiteSpace(schemaContentTypeNames))
                 SchemaContentTypes = schemaContentTypeNames.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-            if (!String.IsNullOrWhiteSpace(dataContentTypeNames))
+            if (!string.IsNullOrWhiteSpace(dataContentTypeNames))
                 DataContentTypes = dataContentTypeNames.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
             VersionHistoryOptions = versionHistoryOptions;
@@ -100,7 +107,7 @@ namespace Orchard.Recipes.Providers.Builders {
             var schemaContentTypes = SchemaContentTypes;
             var exportVersionOptions = GetContentExportVersionOptions(VersionHistoryOptions);
             var contentItems = dataContentTypes.Any()
-                ? _contentManager.Query(exportVersionOptions, dataContentTypes.ToArray()).List().ToArray()
+                ? _contentItemStore.GetMany(exportVersionOptions, x => dataContentTypes.Contains(x.ContentItemRecord.ContentType.Name))
                 : Enumerable.Empty<ContentItem>();
 
             if(schemaContentTypes.Any())
@@ -172,7 +179,7 @@ namespace Orchard.Recipes.Providers.Builders {
         }
 
         private XElement ExportContentItem(ContentItem contentItem) {
-            return _contentManager.Export(contentItem);
+            return _contentExporter.Export(contentItem);
         }
     }
 }

@@ -91,8 +91,8 @@ namespace Orchard.Utility {
         }
 
         public static string RemoveTags(this string html, bool htmlDecode = false) {
-            if (String.IsNullOrEmpty(html)) {
-                return String.Empty;
+            if (string.IsNullOrEmpty(html)) {
+                return string.Empty;
             }
 
             var result = new char[html.Length];
@@ -127,12 +127,12 @@ namespace Orchard.Utility {
 
         // not accounting for only \r (e.g. Apple OS 9 carriage return only new lines)
         public static string ReplaceNewLinesWith(this string text, string replacement) {
-            return String.IsNullOrWhiteSpace(text)
-                       ? String.Empty
+            return string.IsNullOrWhiteSpace(text)
+                       ? string.Empty
                        : text
                              .Replace("\r\n", "\r\r")
-                             .Replace("\n", String.Format(replacement, "\r\n"))
-                             .Replace("\r\r", String.Format(replacement, "\r\n"));
+                             .Replace("\n", string.Format(replacement, "\r\n"))
+                             .Replace("\r\r", string.Format(replacement, "\r\n"));
         }
 
         public static string ToHexString(this byte[] bytes) {

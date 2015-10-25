@@ -29,6 +29,22 @@ namespace Orchard.ContentManagement.Data {
             return versionRecord.ContentItemRecord.Id == id;
         };
 
+        private readonly Func<ContentItemVersionRecord, VersionOptions, bool> _queryByNonId = (versionRecord, options) => {
+            if (options.IsPublished) {
+                return versionRecord.Published;
+            }
+            if (options.IsLatest || options.IsDraftRequired) {
+                return versionRecord.Latest;
+            }
+            if (options.IsDraft) {
+                return versionRecord.Latest && !versionRecord.Published;
+            }
+            if (options.VersionNumber != 0) {
+                return versionRecord.Number == options.VersionNumber;
+            }
+            return true;
+        };
+
         public void Store(ContentItem contentItem) {
             _contentStorageManager.Store(contentItem.Record);
             _contentStorageManager.Store(contentItem.VersionRecord);
@@ -45,6 +61,13 @@ namespace Orchard.ContentManagement.Data {
                 .LastOrDefault();
 
             return new ContentItem { VersionRecord = record };
+        }
+
+        public IReadOnlyList<ContentItem> GetMany(VersionOptions options, Func<ContentItemVersionRecord, bool> query) {
+            return _contentStorageManager
+                .Query<ContentItemVersionRecord>(x => query(x) && _queryByNonId(x, options))
+                .Select(x => new ContentItem { VersionRecord = x })
+                .ToList();
         }
 
         public IReadOnlyList<ContentItem> GetMany(IEnumerable<int> ids) {

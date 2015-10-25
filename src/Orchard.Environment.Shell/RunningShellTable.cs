@@ -143,7 +143,7 @@ namespace Orchard.Environment.Shell {
                             return false;
                         }
 
-                        if (String.IsNullOrWhiteSpace(settings.RequestUrlPrefix)) {
+                        if (string.IsNullOrWhiteSpace(settings.RequestUrlPrefix)) {
                             return true;
                         }
 
