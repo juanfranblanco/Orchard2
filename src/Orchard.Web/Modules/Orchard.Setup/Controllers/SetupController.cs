@@ -7,6 +7,7 @@ using Orchard.Setup.Services;
 using Orchard.Setup.ViewModels;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Orchard.Setup.Controllers {
     public class SetupController : Controller {
@@ -31,9 +32,9 @@ namespace Orchard.Setup.Controllers {
             return View(model);
         }
 
-        public ActionResult Index() {
+        public async Task<ActionResult> IndexAsync() {
             var initialSettings = _setupService.Prime();
-            var recipes = _setupService.Recipes().ToList();
+            var recipes = (await _setupService.Recipes()).ToList();
             string recipeDescription = null;
 
             if (recipes.Any()) {
@@ -48,8 +49,8 @@ namespace Orchard.Setup.Controllers {
         }
 
         [HttpPost, ActionName("Index")]
-        public ActionResult IndexPOST(SetupViewModel model) {
-            var recipes = _setupService.Recipes().ToList();
+        public async Task<ActionResult> IndexPOST(SetupViewModel model) {
+            var recipes = await _setupService.Recipes();
 
             if (model.Recipe == null) {
                 if (!(recipes.Select(r => r.Name).Contains(DefaultRecipe))) {
@@ -69,7 +70,7 @@ namespace Orchard.Setup.Controllers {
             }
 
             try {
-                var recipe = _setupService.Recipes().GetRecipeByName(model.Recipe);
+                var recipe = recipes.GetRecipeByName(model.Recipe);
 
                 var setupContext = new SetupContext {
                     SiteName = model.SiteName,

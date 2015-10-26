@@ -1,8 +1,6 @@
-using Microsoft.AspNet.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Orchard.DependencyInjection;
-using Orchard.Environment.Extensions;
 using Orchard.Environment.Recipes.Models;
 using Orchard.Environment.Recipes.Services;
 using Orchard.Environment.Shell;
@@ -13,6 +11,7 @@ using Orchard.Environment.Shell.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace Orchard.Setup.Services {
@@ -50,19 +49,17 @@ namespace Orchard.Setup.Services {
             return _shellSettings;
         }
 
-        public IEnumerable<Recipe> Recipes() {
+        public async Task<IEnumerable<Recipe>> Recipes() {
             if (_recipes == null) {
-                var recipes = new List<Recipe>();
-                recipes.AddRange(_recipeHarvester.HarvestRecipes().Where(recipe => recipe.IsSetupRecipe));
-                _recipes = recipes;
+                _recipes = await Task.Run(() => _recipeHarvester.HarvestRecipes().Where(recipe => recipe.IsSetupRecipe).ToList());
             }
             return _recipes;
         }
 
-        public string Setup(SetupContext context) {
+        public async Task<string> Setup(SetupContext context) {
             var initialState = _shellSettings.State;
             try {
-                return SetupInternal(context);
+                return await Task.Run(() => SetupInternal(context));
             }
             catch {
                 _shellSettings.State = initialState;
@@ -92,14 +89,6 @@ namespace Orchard.Setup.Services {
 
             var shellSettings = new ShellSettings(_shellSettings);
 
-            //if (shellSettings.DataProviders.Any()) {
-            //    DataProvider provider = new DataProvider();
-            //shellSettings.DataProvider = context.DatabaseProvider;
-            //shellSettings.DataConnectionString = context.DatabaseConnectionString;
-            //shellSettings.DataTablePrefix = context.DatabaseTablePrefix;
-            //}
-
-
             var shellDescriptor = new ShellDescriptor {
                 Features = context.EnabledFeatures.Select(name => new ShellFeature { Name = name })
             };
@@ -109,7 +98,6 @@ namespace Orchard.Setup.Services {
             // creating a standalone environment. 
             // in theory this environment can be used to resolve any normal components by interface, and those
             // components will exist entirely in isolation - no crossover between the safemode container currently in effect
-
             using (var environment = _orchardHost.CreateShellContext(shellSettings)) {
                 executionId = CreateTenantData(context, environment);
             }

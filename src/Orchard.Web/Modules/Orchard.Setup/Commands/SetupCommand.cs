@@ -54,7 +54,7 @@ namespace Orchard.Setup.Commands {
                     .Where(s => !string.IsNullOrEmpty(s));
             }
             Recipe = string.IsNullOrEmpty(Recipe) ? "Default" : Recipe;
-            var recipe = _setupService.Recipes().GetRecipeByName(Recipe);
+            var recipe = _setupService.Recipes().Result.GetRecipeByName(Recipe);
 
             var setupContext = new SetupContext {
                 SiteName = SiteName,

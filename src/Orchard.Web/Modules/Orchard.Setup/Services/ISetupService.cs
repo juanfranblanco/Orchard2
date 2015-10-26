@@ -2,11 +2,12 @@ using Orchard.DependencyInjection;
 using Orchard.Environment.Recipes.Models;
 using Orchard.Environment.Shell;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Orchard.Setup.Services {
     public interface ISetupService : IDependency {
         ShellSettings Prime();
-        IEnumerable<Recipe> Recipes();
-        string Setup(SetupContext context);
+        Task<IEnumerable<Recipe>> Recipes();
+        Task<string> Setup(SetupContext context);
     }
 }
