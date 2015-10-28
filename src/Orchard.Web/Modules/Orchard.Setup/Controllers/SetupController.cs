@@ -32,7 +32,7 @@ namespace Orchard.Setup.Controllers {
             return View(model);
         }
 
-        public async Task<ActionResult> IndexAsync() {
+        public async Task<ActionResult> Index() {
             var initialSettings = _setupService.Prime();
             var recipes = (await _setupService.Recipes()).ToList();
             string recipeDescription = null;
